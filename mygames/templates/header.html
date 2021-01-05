@@ -8,7 +8,7 @@
 
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-            {% if not perms.demo_app.add_article %}
+            {% if not perms.game.add_game %}
                 <a class="nav-link disabled" href="{% url 'demo_app:new' %}">New Game</a>
             {% else %}
                 <a class="nav-link" href="{% url 'demo_app:new' %}">New Game</a>

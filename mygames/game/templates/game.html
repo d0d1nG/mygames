@@ -1,0 +1,33 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+    <div class="card">
+        <div class="card-header">
+            <h1>
+                {{ game.title }}
+                [{{ game.release_year }}]
+                {% if perms.game.change_game %}
+                    <a href="{% url 'demo_app:edit' game.id %}">
+                        <span class="badge btn-dark">Edit</span>
+                    </a>
+                {% endif %}
+            </h1>
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>{{ game.comment }}</p>
+                <p>Would you recommend this game?
+                    {{ game.would_recommend }}
+                </p>
+                <footer class="blockquote-footer">
+                    Author:
+                    <cite title="Source Title">
+                        {{ game.owner }}
+                    </cite>
+                </footer>
+            </blockquote>
+        </div>
+    </div>
+
+{% endblock %}

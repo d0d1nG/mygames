@@ -1,0 +1,15 @@
+{%  extends 'master.html' %}
+
+{% block title %}
+    Games
+{% endblock %}
+
+{%  block content %}
+    <div class="list-group">
+        {% for game in games %}
+            <a class="list-group-item list-group-item-action" href="{% url 'demo_app:game' game.id %}">
+                {{ game.title }}
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

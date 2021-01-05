@@ -32,18 +32,10 @@ class Game(models.Model):
     ]
     genre = models.CharField(blank=True, choices=GAME_GENRE, max_length=2, default='')
     release_year = models.IntegerField(blank=True, validators=[validate_release_year])
-    # owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField(help_text='your comment', default='')
+    grade = models.IntegerField(default=0, validators=[validate_grade])
+    would_recommend = models.BooleanField(default=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=2)
 
     def __str__(self):
         return self.title
-
-
-class Review(models.Model):
-    comment = models.TextField(help_text='your comment', default='')
-    grade = models.IntegerField(blank=True, validators=[validate_grade])
-    would_recommend = models.BooleanField(default=True)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    # owner = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.comment
