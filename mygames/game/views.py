@@ -4,6 +4,7 @@ from .forms import GameForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Avg, Max, Min, Count, Sum
 
 
 def index(req):
@@ -26,6 +27,48 @@ def game(req, id):
     return render(req, 'game.html', {'game': gobject, 'page_title': gobject.title})
 
 
+# --=}_{==!|?|!==}_({=--  AGGREGATION  --=})_{==!|?|!==}_{=-- #
+
+
+@login_required
+def best(req):
+    collection = Game.objects.all().aggregate(Max('grade'))
+    maxVal = collection['grade__max']
+    collection = Game.objects.all().filter(grade=maxVal)
+    return render(req, 'aggreg_max_min.html', {'games': collection, 'grade': maxVal})
+
+
+@login_required
+def worst(req):
+    collection = Game.objects.all().aggregate(Min('grade'))
+    minVal = collection['grade__min']
+    collection = Game.objects.all().filter(grade=minVal)
+    return render(req, 'aggreg_max_min.html', {'games': collection, 'grade': minVal})
+
+
+@login_required
+def count(req):
+    collection = Game.objects.all().aggregate(Count('grade'))
+    avg = collection['grade__count']
+    return render(req, 'aggreg_count.html', {'count': avg})
+
+
+@login_required
+def average(req):
+    collection = Game.objects.all().aggregate(Avg('grade'))
+    avg = collection['grade__avg']
+    collection = Game.objects.count()
+    return render(req, 'aggreg_avg.html', {'count': collection, 'average': avg})
+
+
+@login_required
+def summarize(req):
+    collection = Game.objects.all().aggregate(Sum('grade'))
+    sum = collection['grade__sum']
+    collection = Game.objects.count()
+    return render(req, 'aggreg_sum.html', {'count': collection, 'sum': sum})
+
+
 @permission_required('game.change_game')
 def edit(req, id):
     if req.method == 'POST':
@@ -38,7 +81,7 @@ def edit(req, id):
             game.release_year = form.cleaned_data['release_year']
             game.would_recommend = form.cleaned_data['would_recommend']
             game.save()
-            return redirect('game:games')
+            return redirect('demo_app:games')
         else:
             return render(req, 'edit.html', {'form': form, 'id': id})
     else:
@@ -53,9 +96,9 @@ def new(req):
         form = GameForm(req.POST)
 
         if form.is_valid():
-            game = Game(title=form.cleaned_data['title'], release_year=form.cleaned_data['release_year'], reccomend=form.cleaned_data['would_recommend'], owner=req.user)
+            game = Game(title=form.cleaned_data['title'], comment=form.cleaned_data['comment'], release_year=form.cleaned_data['release_year'], reccomend=form.cleaned_data['would_recommend'], owner=req.user)
             game.save()
-            return redirect('game:games')
+            return redirect('demo_app:games')
         else:
             return render(req, 'new.html', {'form': form})
     else:

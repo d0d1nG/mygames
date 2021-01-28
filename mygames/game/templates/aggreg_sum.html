@@ -1,0 +1,12 @@
+{%  extends 'master.html' %}
+
+{% block title %}
+    Count
+{% endblock %}
+
+{%  block content %}
+    <div>
+        The sum of all your grades is <b>{{ sum }}</b> for <b>{{ count }}</b> games you rated.
+        You can find what the average grade is in <i>/games/average</i>.
+    </div>
+{% endblock %}
